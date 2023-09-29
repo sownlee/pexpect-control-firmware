@@ -1,0 +1,21 @@
+network:
+  ethernets:
+    eth1:
+      dhcp4: no
+      addresses: [123.123.123.3/24] // set eth1 to ping other raspberry pi 4 
+      nameservers:
+        addresses: [1.1.1.1, 8.8.8.8]
+
+  version: 2
+  wifis:
+      renderer: networkd
+      wlan0:
+        access-points:
+          "name_wifi": // name's your wifi
+            password: "your_pass_words"
+        dhcp4: yes
+        addresses:
+          - 192.168.1.203/24 // set wifi static
+        gateway4: 192.168.1.1
+        nameservers:
+          addresses: [8.8.8.8, 1.1.1.1]
