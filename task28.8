@@ -1,0 +1,53 @@
+#  jobs jenkins
+#  Flash thẻ nhớ dùng command dd
+#   Tắt nguồn board
+# — Bât mở nguồn board
+# — Kiểm tra tình trạng board (đã on hay chưa - dùng miniterm + pexpect ) 
+# not on, on but dont have ip:, on....
+# —> lấy ra IP của board (hiển thị lên output) 
+# —-> check SSH conection
+
+
+node {
+    agent any 
+
+    stages {
+        stage('Flash SD card') { 
+            steps { 
+                sh 'sudo dd if=ubuntucore_backup.img of=/dev/sda bs=1M conv=fsync status=progress' 
+            }
+        }
+        stage('Turn Off power board'){
+            steps {
+                sh 'sudo usbrelay 959BI_1=0' 
+            }
+        }
+        stage('Turn On power board'){
+            steps {
+                sh 'sudo usbrelay 959BI_1=1' 
+            }
+        }
+        stage('Check status board'){
+            steps {
+                sh 'checkstatus.py'
+                
+            }
+        }
+        stage('') {
+            steps {
+                sh ''
+            }
+        }
+    }
+}
+
+        stage('Check status board'){
+            steps {
+                sh 'child = pexpect.spawn('miniterm /dev/ttyUSB0 115200')'
+                sh 'child.expect('Board is on')
+                    child.sendline('Some command')
+                    child.expect('Some output')'
+                sh 'ip_address = get_board_ip()'  # Inserted line
+                sh 'echo "IP Address: $ip_address"'  # Inserted line
+            }
+        }
